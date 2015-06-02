@@ -29,28 +29,27 @@
 
 @interface REMenuItem ()
 
-@property (assign, readwrite, nonatomic) REMenuItemView *itemView;
+@property(assign, readwrite, nonatomic) REMenuItemView *itemView;
 
 @end
 
 @interface REMenu ()
 
-@property (strong, readwrite, nonatomic) UIScrollView *menuView;
-@property (strong, readwrite, nonatomic) UIView *menuWrapperView;
-@property (strong, readwrite, nonatomic) REMenuContainerView *containerView;
-@property (strong, readwrite, nonatomic) UIButton *backgroundButton;
-@property (assign, readwrite, nonatomic) BOOL isOpen;
-@property (assign, readwrite, nonatomic) BOOL isAnimating;
-@property (strong, readwrite, nonatomic) NSMutableArray *itemViews;
-@property (weak, readwrite, nonatomic) UINavigationBar *navigationBar;
-@property (strong, readwrite, nonatomic) UIToolbar *toolbar;
+@property(strong, readwrite, nonatomic) UIScrollView *menuView;
+@property(strong, readwrite, nonatomic) UIView *menuWrapperView;
+@property(strong, readwrite, nonatomic) REMenuContainerView *containerView;
+@property(strong, readwrite, nonatomic) UIButton *backgroundButton;
+@property(assign, readwrite, nonatomic) BOOL isOpen;
+@property(assign, readwrite, nonatomic) BOOL isAnimating;
+@property(strong, readwrite, nonatomic) NSMutableArray *itemViews;
+@property(weak, readwrite, nonatomic) UINavigationBar *navigationBar;
+@property(strong, readwrite, nonatomic) UIToolbar *toolbar;
 
 @end
 
 @implementation REMenu
 
-- (id)init
-{
+- (id)init {
     self = [super init];
     if (self) {
         _imageAlignment = REMenuImageAlignmentLeft;
@@ -66,16 +65,16 @@
         _subtitleFont = [UIFont systemFontOfSize:14.0];
         
         _backgroundAlpha = 1.0;
-        _backgroundColor = [UIColor colorWithRed:53/255.0 green:53/255.0 blue:52/255.0 alpha:1.0];
+        _backgroundColor = [UIColor colorWithRed:53 / 255.0 green:53 / 255.0 blue:52 / 255.0 alpha:1.0];
         _separatorColor = [UIColor colorWithPatternImage:self.separatorImage];
-        _textColor = [UIColor colorWithRed:128/255.0 green:126/255.0 blue:124/255.0 alpha:1.0];
+        _textColor = [UIColor colorWithRed:128 / 255.0 green:126 / 255.0 blue:124 / 255.0 alpha:1.0];
         _textShadowColor = [UIColor blackColor];
         _textShadowOffset = CGSizeMake(0, -1.0);
         _textAlignment = NSTextAlignmentCenter;
         
-        _highlightedBackgroundColor = [UIColor colorWithRed:28/255.0 green:28/255.0 blue:27/255.0 alpha:1.0];
-        _highlightedSeparatorColor = [UIColor colorWithRed:28/255.0 green:28/255.0 blue:27/255.0 alpha:1.0];
-        _highlightedTextColor = [UIColor colorWithRed:128/255.0 green:126/255.0 blue:124/255.0 alpha:1.0];
+        _highlightedBackgroundColor = [UIColor colorWithRed:28 / 255.0 green:28 / 255.0 blue:27 / 255.0 alpha:1.0];
+        _highlightedSeparatorColor = [UIColor colorWithRed:28 / 255.0 green:28 / 255.0 blue:27 / 255.0 alpha:1.0];
+        _highlightedTextColor = [UIColor colorWithRed:128 / 255.0 green:126 / 255.0 blue:124 / 255.0 alpha:1.0];
         _highlightedTextShadowColor = [UIColor blackColor];
         _highlightedTextShadowOffset = CGSizeMake(0, -1.0);
         
@@ -88,7 +87,7 @@
         _subtitleTextAlignment = NSTextAlignmentCenter;
         
         _borderWidth = 1.0;
-        _borderColor =  [UIColor colorWithRed:28/255.0 green:28/255.0 blue:27/255.0 alpha:1.0];
+        _borderColor = [UIColor colorWithRed:28 / 255.0 green:28 / 255.0 blue:27 / 255.0 alpha:1.0];
         _animationDuration = 0.3;
         _closeAnimationDuration = 0.2;
         _bounce = YES;
@@ -99,8 +98,7 @@
     return self;
 }
 
-- (id)initWithItems:(NSArray *)items
-{
+- (id)initWithItems:(NSArray *)items {
     self = [self init];
     if (self) {
         _items = items;
@@ -108,8 +106,7 @@
     return self;
 }
 
-- (void)showFromRect:(CGRect)rect inView:(UIView *)view
-{
+- (void)showFromRect:(CGRect)rect inView:(UIView *)view {
     if (self.isAnimating) {
         return;
     }
@@ -149,7 +146,7 @@
     if (REUIKitIsFlatMode()) {
         self.toolbar = ({
             UIToolbar *toolbar = [[UIToolbar alloc] init];
-            toolbar.barStyle = (UIBarStyle)self.liveBlurBackgroundStyle;
+            toolbar.barStyle = (UIBarStyle) self.liveBlurBackgroundStyle;
             if ([toolbar respondsToSelector:@selector(setBarTintColor:)])
                 [toolbar performSelector:@selector(setBarTintColor:) withObject:self.liveBlurTintColor];
             toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -222,8 +219,9 @@
     
     // Set up frames
     //
-    //    self.menuWrapperView.frame = CGRectMake(0, -self.combinedHeight - navigationBarOffset, rect.size.width, self.combinedHeight + navigationBarOffset);
-    self.menuWrapperView.frame = CGRectMake(0, -self.combinedHeight - navigationBarOffset, rect.size.width, 220);
+    float height = self.combinedHeight + navigationBarOffset;
+    self.menuWrapperView.frame = CGRectMake(0, -self.combinedHeight - navigationBarOffset, rect.size.width, height >= 220 ? 220 : height);
+    //    self.menuWrapperView.frame = CGRectMake(0, -self.combinedHeight - navigationBarOffset, rect.size.width, 220);
     self.menuView.contentSize = CGSizeMake(rect.size.width, self.combinedHeight + navigationBarOffset);
     self.menuView.frame = self.menuWrapperView.bounds;
     if (REUIKitIsFlatMode() && self.liveBlur) {
@@ -247,11 +245,11 @@
     if (self.bounce) {
         self.isAnimating = YES;
         if ([UIView respondsToSelector:@selector(animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:)]) {
-            [UIView animateWithDuration:self.animationDuration+self.bounceAnimationDuration
+            [UIView animateWithDuration:self.animationDuration + self.bounceAnimationDuration
                                   delay:0.0
                  usingSpringWithDamping:0.6
                   initialSpringVelocity:4.0
-                                options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseInOut
+                                options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
                              animations:^{
                                  self.backgroundView.alpha = self.backgroundAlpha;
                                  CGRect frame = self.menuView.frame;
@@ -263,7 +261,7 @@
         } else {
             [UIView animateWithDuration:self.animationDuration
                                   delay:0.0
-                                options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseInOut
+                                options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
                              animations:^{
                                  self.backgroundView.alpha = self.backgroundAlpha;
                                  CGRect frame = self.menuView.frame;
@@ -277,7 +275,7 @@
     } else {
         [UIView animateWithDuration:self.animationDuration
                               delay:0.0
-                            options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseInOut
+                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
                          animations:^{
                              self.backgroundView.alpha = self.backgroundAlpha;
                              CGRect frame = self.menuView.frame;
@@ -289,13 +287,11 @@
     }
 }
 
-- (void)showInView:(UIView *)view
-{
+- (void)showInView:(UIView *)view {
     [self showFromRect:view.bounds inView:view];
 }
 
-- (void)showFromNavigationController:(UINavigationController *)navigationController
-{
+- (void)showFromNavigationController:(UINavigationController *)navigationController {
     if (self.isAnimating) {
         return;
     }
@@ -309,8 +305,7 @@
     }
 }
 
-- (void)closeWithCompletion:(void (^)(void))completion
-{
+- (void)closeWithCompletion:(void (^)(void))completion {
     if (self.isAnimating) return;
     
     self.isAnimating = YES;
@@ -320,10 +315,10 @@
     void (^closeMenu)(void) = ^{
         [UIView animateWithDuration:self.closeAnimationDuration
                               delay:0.0
-                            options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseInOut
-                         animations:^ {
+                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
+                         animations:^{
                              CGRect frame = self.menuView.frame;
-                             frame.origin.y = - self.combinedHeight - navigationBarOffset;
+                             frame.origin.y = -self.combinedHeight - navigationBarOffset;
                              self.menuWrapperView.frame = frame;
                              self.backgroundView.alpha = 0;
                          } completion:^(BOOL finished) {
@@ -356,7 +351,7 @@
             CGRect frame = self.menuView.frame;
             frame.origin.y = -20.0;
             self.menuWrapperView.frame = frame;
-        } completion:^(BOOL finished) {
+        }                completion:^(BOOL finished) {
             closeMenu();
         }];
     } else {
@@ -364,18 +359,15 @@
     }
 }
 
-- (void)close
-{
+- (void)close {
     [self closeWithCompletion:nil];
 }
 
-- (CGFloat)combinedHeight
-{
+- (CGFloat)combinedHeight {
     return self.items.count * self.itemHeight + self.items.count * self.separatorHeight + 40.0 + self.cornerRadius;
 }
 
-- (void)setNeedsLayout
-{
+- (void)setNeedsLayout {
     [UIView animateWithDuration:0.35 animations:^{
         [self.containerView layoutSubviews];
     }];
@@ -384,14 +376,13 @@
 #pragma mark -
 #pragma mark Setting style
 
-- (UIImage *)separatorImage
-{
+- (UIImage *)separatorImage {
     UIGraphicsBeginImageContext(CGSizeMake(1, 4.0));
     CGContextRef context = UIGraphicsGetCurrentContext();
     UIGraphicsPushContext(context);
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:28/255.0 green:28/255.0 blue:27/255.0 alpha:1.0].CGColor);
+    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:28 / 255.0 green:28 / 255.0 blue:27 / 255.0 alpha:1.0].CGColor);
     CGContextFillRect(context, CGRectMake(0, 0, 1.0, 2.0));
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:79/255.0 green:79/255.0 blue:77/255.0 alpha:1.0].CGColor);
+    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:79 / 255.0 green:79 / 255.0 blue:77 / 255.0 alpha:1.0].CGColor);
     CGContextFillRect(context, CGRectMake(0, 3.0, 1.0, 2.0));
     UIGraphicsPopContext();
     UIImage *outputImage = UIGraphicsGetImageFromCurrentImageContext();
